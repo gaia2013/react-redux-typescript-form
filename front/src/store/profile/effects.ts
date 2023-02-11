@@ -8,7 +8,7 @@ export const searchAddressFromPostalcode =
     if (!isCommpletePostalcode(code)) return
 
     const result = await fetch(
-      `https://apis.postcode-jp.com/api/v3/postcodes?apikey=[NT8fqmT2qZ4FZJzUC67ubOgxxNarwrL9XpV86S1]&postcode=${code}`
+      `https://apis.postcode-jp.com/api/v3/postcodes?apikey=[process.env.POSTAL_CODE_API_KEY]&postcode=${code}`
     ).then((res) => res.json())
 
     const address: Partial<Address> = {
