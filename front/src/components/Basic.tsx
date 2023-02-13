@@ -1,10 +1,11 @@
 import {
   FormControl,
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   Radio,
   RadioGroup,
-  TextField
+  TextField,
 } from '@material-ui/core'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,7 +13,9 @@ import { Gender } from '../domain/entity/gender'
 import { Profile } from '../domain/entity/profile'
 import { RootState } from '../domain/entity/rootState'
 import { PROFILE } from '../domain/services/profile'
+import { calculateValidation } from '../domain/services/validation'
 import profileActions from '../store/profile/actions'
+import validationActions from '../store/validation/actions'
 import useStyles from './styles'
 
 const Basic = () => {
@@ -22,9 +25,25 @@ const Basic = () => {
   const classes = useStyles()
 
   const handleChange = (member: Partial<Profile>) => {
+    console.log(profile)
     dispatch(profileActions.setProfile(member))
+    console.log(profile)
+    recalculateValidation(member)
+    console.log(profile)
   }
 
+  const recalculateValidation = (member: Partial<Profile>) => {
+    if (!validation.isStartValidation) return
+
+    const newProfile = {
+      ...profile,
+      ...member,
+    }
+    const message = calculateValidation(newProfile)
+    dispatch(validationActions.setValidation(message))
+  }
+
+  const validation = useSelector((state: RootState) => state.validation)
   return (
     <>
       <TextField
@@ -33,6 +52,9 @@ const Basic = () => {
         label={PROFILE.NAME}
         value={profile.name}
         onChange={(e) => handleChange({ name: e.target.value })}
+        error={!!validation.message.name}
+        helperText={validation.message.name}
+        required
       />
       <TextField
         fullWidth
@@ -42,8 +64,14 @@ const Basic = () => {
         label={PROFILE.DESCRIPTION}
         value={profile.description}
         onChange={(e) => handleChange({ description: e.target.value })}
+        error={!!validation.message.description}
+        helperText={validation.message.description}
       />
-      <FormControl className={classes.formField}>
+      <FormControl
+        className={classes.formField}
+        error={!!validation.message.gender}
+        required
+      >
         <FormLabel>{PROFILE.GENDER}</FormLabel>
         <RadioGroup
           value={profile.gender}
@@ -60,6 +88,7 @@ const Basic = () => {
             control={<Radio color="primary" />}
           />
         </RadioGroup>
+        <FormHelperText>{validation.message.gender}</FormHelperText>
       </FormControl>
       <TextField
         fullWidth
@@ -69,8 +98,11 @@ const Basic = () => {
         value={profile.birthday}
         onChange={(e) => handleChange({ birthday: e.target.value })}
         InputLabelProps={{
-          shrink: true
+          shrink: true,
         }}
+        error={!!validation.message.birthday}
+        helperText={validation.message.birthday}
+        required
       />
     </>
   )
