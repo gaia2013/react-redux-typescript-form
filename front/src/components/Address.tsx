@@ -25,6 +25,8 @@ const Address = () => {
     dispatch(searchAddressFromPostalcode(code))
   }
 
+  const validation = useSelector((state: RootState) => state.validation)
+
   return (
     <>
       <TextField
@@ -33,6 +35,9 @@ const Address = () => {
         label={PROFILE.ADDRESS.POSTALCODE}
         value={profile.address.postalcode}
         onChange={(e) => handlePostalcodeChange(e.target.value)}
+        error={!!validation.message.address.postalcode}
+        helperText={validation.message.address.postalcode}
+        required
       />
       <TextField
         fullWidth
@@ -40,6 +45,9 @@ const Address = () => {
         label={PROFILE.ADDRESS.PREFECTURE}
         value={profile.address.prefecture}
         onChange={(e) => handleAddressChange({ prefecture: e.target.value })}
+        error={!!validation.message.address.prefecture}
+        helperText={validation.message.address.prefecture}
+        required
       />
       <TextField
         fullWidth
@@ -47,6 +55,9 @@ const Address = () => {
         label={PROFILE.ADDRESS.CITY}
         value={profile.address.city}
         onChange={(e) => handleAddressChange({ city: e.target.value })}
+        error={!!validation.message.address.city}
+        helperText={validation.message.address.city}
+        required
       />
       <TextField
         fullWidth
@@ -54,6 +65,8 @@ const Address = () => {
         label={PROFILE.ADDRESS.RESTADDRESS}
         value={profile.address.restAddress}
         onChange={(e) => handleAddressChange({ restAddress: e.target.value })}
+        error={!!validation.message.address.restAddress}
+        helperText={validation.message.address.restAddress}
       />
     </>
   )
