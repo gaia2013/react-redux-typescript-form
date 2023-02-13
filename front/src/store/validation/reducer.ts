@@ -1,4 +1,5 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers'
+import { ValidationState } from '../../domain/entity/validation'
 import validationActions from './actions'
 
 const init: ValidationState = {
