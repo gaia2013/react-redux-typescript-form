@@ -2,11 +2,14 @@ import { TextField } from '@material-ui/core'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Address as IAddress } from '../domain/entity/address'
+import { Profile } from '../domain/entity/profile'
 import { RootState } from '../domain/entity/rootState'
 import { isPostalcode } from '../domain/services/address'
 import { PROFILE } from '../domain/services/profile'
+import { calculateValidation } from '../domain/services/validation'
 import profileActions from '../store/profile/actions'
 import searchAddressFromPostalcode from '../store/profile/effects'
+import validationActions from '../store/validation/actions'
 import useStyles from './styles'
 
 const Address = () => {
@@ -17,12 +20,27 @@ const Address = () => {
 
   const handleAddressChange = (member: Partial<IAddress>) => {
     dispatch(profileActions.setAddress(member))
+    recalculateValidation({ address: { ...profile.address, ...member } })
   }
 
   const handlePostalcodeChange = (code: string) => {
     if (!isPostalcode(code)) return
     dispatch(profileActions.setAddress({ postalcode: code }))
     dispatch(searchAddressFromPostalcode(code))
+    recalculateValidation({
+      address: { ...profile.address, postalcode: code },
+    })
+  }
+
+  const recalculateValidation = (member: Partial<Profile>) => {
+    if (!validation.isStartValidation) return
+
+    const newProfile = {
+      ...profile,
+      ...member,
+    }
+    const message = calculateValidation(newProfile)
+    dispatch(validationActions.setValidation(message))
   }
 
   const validation = useSelector((state: RootState) => state.validation)

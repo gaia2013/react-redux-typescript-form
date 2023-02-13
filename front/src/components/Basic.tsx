@@ -13,7 +13,9 @@ import { Gender } from '../domain/entity/gender'
 import { Profile } from '../domain/entity/profile'
 import { RootState } from '../domain/entity/rootState'
 import { PROFILE } from '../domain/services/profile'
+import { calculateValidation } from '../domain/services/validation'
 import profileActions from '../store/profile/actions'
+import validationActions from '../store/validation/actions'
 import useStyles from './styles'
 
 const Basic = () => {
@@ -23,7 +25,22 @@ const Basic = () => {
   const classes = useStyles()
 
   const handleChange = (member: Partial<Profile>) => {
+    console.log(profile)
     dispatch(profileActions.setProfile(member))
+    console.log(profile)
+    recalculateValidation(member)
+    console.log(profile)
+  }
+
+  const recalculateValidation = (member: Partial<Profile>) => {
+    if (!validation.isStartValidation) return
+
+    const newProfile = {
+      ...profile,
+      ...member,
+    }
+    const message = calculateValidation(newProfile)
+    dispatch(validationActions.setValidation(message))
   }
 
   const validation = useSelector((state: RootState) => state.validation)
