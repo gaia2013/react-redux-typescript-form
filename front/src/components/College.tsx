@@ -1,6 +1,7 @@
 import {
   Button,
   FormControl,
+  FormHelperText,
   Grid,
   InputLabel,
   MenuItem,
@@ -49,6 +50,8 @@ const College = () => {
     (f) => f.name === profile.college.faculty
   )[0]
 
+  const validation = useSelector((state: RootState) => state.validation)
+
   return (
     <>
       {!profile.college.name && (
@@ -94,7 +97,11 @@ const College = () => {
             value={profile.college.name}
             disabled
           />
-          <FormControl fullWidth className={classes.formField}>
+          <FormControl
+            fullWidth
+            className={classes.formField}
+            error={!!validation.message.college.faculty}
+          >
             <InputLabel>{PROFILE.COLLEGE.FACULTY}</InputLabel>
             <Select
               value={profile.college.faculty}
@@ -111,6 +118,9 @@ const College = () => {
                 </MenuItem>
               ))}
             </Select>
+            <FormHelperText>
+              {validation.message.college.faculty}
+            </FormHelperText>
           </FormControl>
           {currentFaculty?.department.length > 0 && (
             <FormControl fullWidth className={classes.formField}>
@@ -121,7 +131,7 @@ const College = () => {
                   handleCollegeChange({ department: e.target.value as string })
                 }
               >
-                {currentFaculty.department.map(d=>(
+                {currentFaculty.department.map((d) => (
                   <MenuItem key={d} value={d}>
                     {d}
                   </MenuItem>

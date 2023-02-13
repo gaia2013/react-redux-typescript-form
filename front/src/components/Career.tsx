@@ -34,6 +34,7 @@ const Career = () => {
     dispatch(profileActions.deleteCareer(i))
   }
 
+  const validation = useSelector((state: RootState) => state.validation)
   return (
     <>
       {careers.map((c, i) => (
@@ -47,6 +48,8 @@ const Career = () => {
             label={PROFILE.CAREERS.COMPANY}
             value={c.company}
             onChange={(e) => handleChange({ company: e.target.value }, i)}
+            error={!!validation.message.careers[i]?.company}
+            helperText={validation.message.careers[i]?.company}
           />
           <TextField
             className={classes.formField}
@@ -54,6 +57,8 @@ const Career = () => {
             label={PROFILE.CAREERS.POSITION}
             value={c.position}
             onChange={(e) => handleChange({ position: e.target.value }, i)}
+            error={!!validation.message.careers[i]?.position}
+            helperText={validation.message.careers[i]?.company}
           />
           <div className={classes.careerSpan}>
             <InputLabel shrink>{PROFILE.CAREERS.SPAN}</InputLabel>
@@ -72,6 +77,8 @@ const Career = () => {
                   }}
                   value={c.startAt}
                   onChange={(e) => handleChange({ startAt: e.target.value }, i)}
+                  error={!!validation.message.careers[i]?.startAt}
+                  helperText={validation.message.careers[i]?.startAt}
                 />
               </Grid>
               <Grid item xs={2}>
@@ -86,6 +93,8 @@ const Career = () => {
                   }}
                   value={c.endAt}
                   onChange={(e) => handleChange({ endAt: e.target.value }, i)}
+                  error={!!validation.message.careers[i]?.endAt}
+                  helperText={validation.message.careers[i]?.endAt}
                 />
               </Grid>
             </Grid>
